@@ -1,0 +1,812 @@
+<html<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Exam 2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+	.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	}
+
+	
+</style>
+<body>
+<div>
+
+
+<table border=1 width='80%' class="center" cellspacing=1>
+	<tr>
+		<th width='70%'>
+		Instruction: <br>
+Create an interactive payment calculator that will compute the breakdown of the Net Total Amount Payable in every transaction with a vendor, based on the sample model. Use appscript/ javascript in replicating this calculator into a web app.
+
+Note: the formulas used are indicated in the cells (in blue font)
+		</th>
+		<th >
+		<span style='color:violet;'>Violet</span> : Editable by End-User	<br>
+		<span style='color:red;'>Red</span>  : Fixed Data <br>
+		<span style='color:blue;'>Blue</span>  : Automatically Calculates <br>
+		</th>
+	</tr>
+</table>
+<br>
+<table border=1 width='80%' class="center" >
+	<tr >
+		<th colspan='7' style='color:white;background-color:black;'>
+		Vendor Payment Calculator
+		</th>
+	</tr>
+	<tr>
+		<td  colspan='7' style='color:white;background-color:#000066;text-align: center;'>
+			GIVEN DATA
+		</td>
+	</tr>
+	<tr>
+		<td  colspan='7' >
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			Vendor Name :
+		</td>
+		<td  >
+			Company A
+		</td>
+		<td  >
+		</td>
+		<td  colspan='4'>
+		Total Material Cost : 
+		37,180.80 
+		(<span id='vat_type1'>VATInc</span>)
+		</td>
+		
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			Vendor VAT Status :
+		</td>
+		<td  >
+			<span id='vet_vendor_status'>VAT Registered</span>
+		</td>
+		<td  >
+		</td>
+		<td  colspan='4'>
+		Total Labor Cost : 
+		8,000.00
+		(<span id='vat_type2'>VATInc</span>)
+		</td>
+		
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+		</td>
+		<td  >
+			
+		</td>
+		<td  >
+		</td>
+		<td  colspan='4'>
+		TOTAL COST : 
+		45,180.80
+		(<span id='vat_type3'>VATInc</span>)
+		</td>
+	</tr>
+	<tr>
+		<td  colspan='7' >
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td  colspan='7' >
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td colspan='2' style='color:white;background-color:#000066;text-align: center;' >
+			Controls
+		</td>
+		<td  >
+			
+		</td>
+		<td colspan='4' style='color:white;background-color:#000066;text-align: center;' >
+			Computation
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			Vendor VAT Status	 :
+		</td>
+		<td  >
+			<select id='vendor_vat_status' onchange='vendor_vat_status(this.value)'>
+				<option  value='VAT'>VAT</option>
+				<option value='Non-VAT'>Non-VAT</option>
+			</select>
+		</td>
+		<td  >
+		</td>
+		<td  >
+			
+		</td>
+		<td  style='text-align:right'>
+			Material Cost
+		</td>
+		<td  style='text-align:right' >
+			Labor Cost
+		</td>
+		<td   style='text-align:right'>
+			Total Cost
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			Quoted Price VAT Status	 :
+		</td>
+		<td  >
+			<select id='quoted_price_vat_status' onchange='quoted_price_vat_status(this.value)'>
+			
+				<option value='VATInc'>VATInc</option>
+				<option  value='VATEx'>VATEx</option>
+			</select>
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			Total Cost (VATInc)
+		</td>
+		<td  style='text-align:right'>
+			<span id='total_cost_vatinc_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='total_cost_vatinc_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='total_cost_vatinc_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			EWT Rate	 :
+		</td>
+		<td  >
+			<input type='number' value='0.00' onchange='start_computation(this.value)' name='ewt_rate' id='ewt_rate' step="0.01"> 
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			Less: Order Discount Applied on VATInc
+		</td>
+		<td  style='text-align:right'>
+			<span id='less_order_discount_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='less_order_discount_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='less_order_discount_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' colspan=3 >
+		</td>
+		<td style='text-align:right' >
+			Less: VAT
+		</td>
+		<td  style='text-align:right'>
+			<span id='less_vat_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='less_vat_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='less_vat_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' colspan=1 >
+			Order Discount
+		</td>
+		<td style='text-align:right' colspan=6>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+		Discount applied on	 :
+		</td>
+		<td  >
+			<select id='discount_applied_on_first' onchange='start_computation(this.value)'>
+				<option  value='VATInc Price'>VATInc Price</option>
+				<option  value='VATEx Price'>VATEx Price</option>
+			</select>
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			Total Amount (VATEx)
+		</td>
+		<td  style='text-align:right'>
+			<span id='total_amount_vat_ex_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='total_amount_vat_ex_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='total_amount_vat_ex_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' colspan=3 >
+		</td>
+		<td style='text-align:right' >
+			Less: Order Discount Applied on VATEx
+		</td>
+		<td  style='text-align:right'>
+			<span id='less_order_discount_vatex_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='less_order_discount_vatex_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='less_order_discount_vatex_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			% of Cost discount	 :
+		</td>
+		<td  >
+				<input type='number' value='0.00' onchange='start_computation(this.value)' name='percent_cost_discount' id='percent_cost_discount' step="0.01"> 
+		
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			Discounted Total Cost (VATEx)
+		</td>
+		<td  style='text-align:right'>
+			<span id='discounted_total_cost_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='discounted_total_cost_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='discounted_total_cost_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+					discounted on :
+		</td>
+		<td  >
+			<select id='discounted_on_type' onchange='start_computation(this.value)'>
+				<option  value='Material Cost'>Material Cost</option>
+				<option value='Labor Cost'>L&E Cost</option>
+				<option value='Total Cost'>Total Cost</option>
+			</select>
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+				Add: VAT
+		</td>
+		<td  style='text-align:right'>
+			<span id='add_vat_mat_cost'>-</span>
+		</td>
+		<td  style='text-align:right' >
+			<span id='add_vat_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='add_vat_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' colspan='3' >
+		</td>
+		<td style='text-align:right' >
+				Less:  EWT
+		</td>
+		<td  style='text-align:right;background-color:grey' >
+			
+		</td>
+		<td  style='text-align:right' >
+			<span id='less_ewt_labor_cost'>-</span>
+		</td>
+		<td   style='text-align:right'>
+			<span id='less_ewt_total_cost'>-</span>
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+			Fixed Amount	 :
+		</td>
+		<td  >
+				<input type='number' value='0.00' onchange='start_computation(this.value)' name='fixed_amount' id='fixed_amount' step="0.01"> 
+		
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			Add: Shipment / Delivery Cost
+		</td>
+		<td  style='text-align:right;background-color:grey'>
+		</td>
+		<td  style='text-align:right;background-color:grey' >
+		</td>
+		<td   style='text-align:right'>
+			1,200.00
+		</td>
+	</tr>
+	<tr>
+		<td style='text-align:right' >
+		discounted on	 :
+		</td>
+		<td  >
+				<select onchange='start_computation(this.value)' id='discounted_on_type_second'>
+				<option  value='Material Cost'>Material Cost</option>
+				<option value='Labor Cost'>L&E Cost</option>
+			</select>
+		</td>
+		<td  >
+		</td>
+		<td style='text-align:right' >
+			NET TOTAL AMOUNT PAYABLE
+		</td>
+		<td  style='text-align:right;background-color:grey'>
+		</td>
+		<td  style='text-align:right;background-color:grey' >
+		</td>
+		<td   style='text-align:right'>
+			<span id='net_total'>-</span>
+		</td>
+	</tr>	
+</table>
+
+<script>
+	window.onload = start_computation();
+	
+	function start_computation()
+	{
+		var mat_cost = 37180.8;
+		var labor_cost = 8000;
+		var vendor_vat_status = document.getElementById("vendor_vat_status").value ;
+		
+		//compute for Total Cost (VATInc)
+		if(vendor_vat_status == "Non-VAT")
+		{
+			document.getElementById("total_cost_vatinc_mat_cost").innerHTML = 0.00;
+			document.getElementById("total_cost_vatinc_labor_cost").innerHTML = 0.00;
+			document.getElementById("total_cost_vatinc_total_cost").innerHTML = 0.00;
+		}
+		else
+		{
+			var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+			if(quoted_price_vat_status == "VATInc")
+			{
+			
+				var total_cost = mat_cost + labor_cost;
+				document.getElementById("total_cost_vatinc_mat_cost").innerHTML = mat_cost.toFixed(2);
+				document.getElementById("total_cost_vatinc_labor_cost").innerHTML = labor_cost.toFixed(2);
+				document.getElementById("total_cost_vatinc_total_cost").innerHTML = total_cost.toFixed(2);
+		
+			}
+			else
+			{
+				document.getElementById("total_cost_vatinc_mat_cost").innerHTML = 0.00;
+				document.getElementById("total_cost_vatinc_labor_cost").innerHTML = 0.00;
+				document.getElementById("total_cost_vatinc_total_cost").innerHTML = 0.00;
+			}
+		}
+		
+		//compute for Less: Order Discount Applied on VATInc
+		if(vendor_vat_status == "Non-VAT")
+		{
+	
+			document.getElementById("less_order_discount_mat_cost").innerHTML = 0.00;
+			document.getElementById("less_order_discount_labor_cost").innerHTML = 0.00;
+			document.getElementById("less_order_discount_total_cost").innerHTML = 0.00;
+		}
+		else
+		{
+			var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+			
+			if(quoted_price_vat_status == "VATEx")
+			{
+				document.getElementById("less_order_discount_mat_cost").innerHTML = 0.00;
+				document.getElementById("less_order_discount_labor_cost").innerHTML = 0.00;
+				document.getElementById("less_order_discount_total_cost").innerHTML = 0.00;
+			}
+			else
+			{
+				var discount_applied_on_first = document.getElementById("discount_applied_on_first").value;
+				
+				if(discount_applied_on_first == "VATEx Price")
+				{
+					document.getElementById("less_order_discount_mat_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_labor_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_total_cost").innerHTML = 0.00;
+				}
+				else
+				{
+				
+					var discounted_on_type = document.getElementById("discounted_on_type").value;
+					if(discounted_on_type == "Material Cost") 
+					{
+						var percent_cost_discount =  document.getElementById("percent_cost_discount").value;
+						var new_mat_cost = mat_cost * (percent_cost_discount/100);
+						document.getElementById("less_order_discount_mat_cost").innerHTML = new_mat_cost.toFixed(2);
+						document.getElementById("less_order_discount_labor_cost").innerHTML = 0.00;
+						document.getElementById("less_order_discount_total_cost").innerHTML = new_mat_cost.toFixed(2);
+					}
+					else if(discounted_on_type == "Labor Cost")
+					{
+						var percent_cost_discount =  document.getElementById("percent_cost_discount").value;
+						var new_labor_cost = labor_cost * (percent_cost_discount/100);
+						document.getElementById("less_order_discount_mat_cost").innerHTML = 0.00;
+						document.getElementById("less_order_discount_labor_cost").innerHTML = new_labor_cost.toFixed(2);
+						document.getElementById("less_order_discount_total_cost").innerHTML = new_labor_cost.toFixed(2);
+						
+					}
+					else
+					{
+						var percent_cost_discount =  document.getElementById("percent_cost_discount").value;
+						var new_labor_cost = labor_cost * (percent_cost_discount/100);
+						var new_mat_cost = mat_cost * (percent_cost_discount/100);
+						var new_total_cost = new_mat_cost + new_labor_cost;
+						document.getElementById("less_order_discount_mat_cost").innerHTML = new_mat_cost.toFixed(2);
+						document.getElementById("less_order_discount_labor_cost").innerHTML = new_labor_cost.toFixed(2);
+						document.getElementById("less_order_discount_total_cost").innerHTML = new_total_cost.toFixed(2);
+						
+					}
+				}
+			}
+		}
+	
+		//compute for Less: VAT
+		if(vendor_vat_status == "Non-VAT")
+		{
+			document.getElementById("less_vat_mat_cost").innerHTML = 0.00;
+			document.getElementById("less_vat_labor_cost").innerHTML = 0.00;
+			document.getElementById("less_vat_total_cost").innerHTML = 0.00;
+		}
+		else
+		{
+			var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+			if(quoted_price_vat_status == "VATInc")
+			{
+				var total_cost_vatinc_mat_cost = parseFloat(document.getElementById("total_cost_vatinc_mat_cost").innerText);
+				var less_order_discount_mat_cost = parseFloat(document.getElementById("less_order_discount_mat_cost").innerText);
+				var new_less_vat_mat_cost = ((total_cost_vatinc_mat_cost - less_order_discount_mat_cost) / 1.12)*.12;
+				
+				var total_cost_vatinc_labor_cost = parseFloat(document.getElementById("total_cost_vatinc_labor_cost").innerText);
+				var less_order_discount_labor_cost = parseFloat(document.getElementById("less_order_discount_labor_cost").innerText);
+				var new_less_vat_labor_cost = ((total_cost_vatinc_labor_cost - less_order_discount_labor_cost) / 1.12)*.12;
+				
+				var new_less_vat_total_cost = new_less_vat_mat_cost + new_less_vat_labor_cost;
+				
+				document.getElementById("less_vat_mat_cost").innerHTML = new_less_vat_mat_cost.toFixed(2);
+				document.getElementById("less_vat_labor_cost").innerHTML =  new_less_vat_labor_cost.toFixed(2);
+				document.getElementById("less_vat_total_cost").innerHTML = new_less_vat_total_cost.toFixed(2);
+			}
+			else
+			{
+				document.getElementById("less_vat_mat_cost").innerHTML = 0.00;
+				document.getElementById("less_vat_labor_cost").innerHTML = 0.00;
+				document.getElementById("less_vat_total_cost").innerHTML = 0.00;
+			}
+			
+		}
+	
+	
+		//compute Total Amount (VATEx)
+		var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+		if(quoted_price_vat_status == "VATEx")
+		{
+			var new_total_amount_vat_ex_total_cost = mat_cost + labor_cost;
+			document.getElementById("total_amount_vat_ex_mat_cost").innerHTML = mat_cost.toFixed(2);
+			document.getElementById("total_amount_vat_ex_labor_cost").innerHTML = labor_cost.toFixed(2);
+			document.getElementById("total_amount_vat_ex_total_cost").innerHTML =  new_total_amount_vat_ex_total_cost.toFixed(2);
+			
+			
+		}
+		else
+		{
+				var total_cost_vatinc_mat_cost = parseFloat(document.getElementById("total_cost_vatinc_mat_cost").innerText);
+				var less_order_discount_mat_cost = parseFloat(document.getElementById("less_order_discount_mat_cost").innerText);
+				var less_vat_mat_cost = parseFloat(document.getElementById("less_vat_mat_cost").innerText);
+				var new_total_amount_vat_ex_mat_cost = total_cost_vatinc_mat_cost - less_order_discount_mat_cost - less_vat_mat_cost;
+				
+				
+				var total_cost_vatinc_labor_cost = parseFloat(document.getElementById("total_cost_vatinc_labor_cost").innerText);
+				var less_order_discount_labor_cost = parseFloat(document.getElementById("less_order_discount_labor_cost").innerText);
+				var less_vat_labor_cost = parseFloat(document.getElementById("less_vat_labor_cost").innerText);
+				var new_total_amount_vat_ex_labor_cost = total_cost_vatinc_labor_cost - less_order_discount_labor_cost - less_vat_labor_cost;
+				
+				var new_total_amount_vat_ex_total_cost = new_total_amount_vat_ex_mat_cost + new_total_amount_vat_ex_labor_cost;
+				document.getElementById("total_amount_vat_ex_mat_cost").innerHTML = new_total_amount_vat_ex_mat_cost.toFixed(2);
+				document.getElementById("total_amount_vat_ex_labor_cost").innerHTML = new_total_amount_vat_ex_labor_cost.toFixed(2);
+				document.getElementById("total_amount_vat_ex_total_cost").innerHTML =  new_total_amount_vat_ex_total_cost.toFixed(2);
+		}
+	
+		//compute Less: Order Discount Applied on VATEx
+		var discount_applied_on_first = document.getElementById("discount_applied_on_first").value;
+				
+		if(discount_applied_on_first == "VATInc Price")
+		{
+			document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = 0.00;
+			document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = 0.00;
+			document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  0.00;
+			
+		}
+		else
+		{
+			var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+			if(quoted_price_vat_status == "VATInc")
+			{
+				var discounted_on_type = document.getElementById("discounted_on_type").value;
+				if(discounted_on_type == "Material Cost") 
+				{
+					var total_cost_vatinc_mat_cost = parseFloat(document.getElementById("total_cost_vatinc_mat_cost").innerText);
+					var less_vat_mat_cost = parseFloat(document.getElementById("less_vat_mat_cost").innerText);
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					var discounted_on_type_second = document.getElementById("discounted_on_type_second").value ;
+					var fixed_amount = document.getElementById("fixed_amount").value ;
+					
+					
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_mat_cost = ((total_cost_vatinc_mat_cost-less_vat_mat_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_mat_cost = new_less_order_discount_vatex_mat_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_mat_cost = ((total_cost_vatinc_mat_cost-less_vat_mat_cost) * (percent_cost_discount/100));
+					}
+					document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = new_less_order_discount_vatex_mat_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_mat_cost.toFixed(2);
+					
+				}
+				else if (discounted_on_type == "Labor Cost") 
+				{
+					
+					var total_cost_vatinc_labor_cost = parseFloat(document.getElementById("total_cost_vatinc_labor_cost").innerText);
+					var less_vat_labor_cost = parseFloat(document.getElementById("less_vat_labor_cost").innerText);
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					
+					var discounted_on_type_second = document.getElementById("discounted_on_type_second").value ;
+					var fixed_amount = document.getElementById("fixed_amount").value ;
+					
+					if(discounted_on_type_second == "Labor Cost")
+					{
+						
+						var new_less_order_discount_vatex_labor_cost = ((total_cost_vatinc_mat_cost-less_vat_labor_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_labor_cost = new_less_order_discount_vatex_labor_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_labor_cost = ((total_cost_vatinc_mat_cost-less_vat_labor_cost) * (percent_cost_discount/100));
+					}
+					
+					document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = new_less_order_discount_vatex_labor_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_labor_cost.toFixed(2);
+				}
+				else
+				{
+					var total_cost_vatinc_mat_cost = parseFloat(document.getElementById("total_cost_vatinc_mat_cost").innerText);
+					var less_vat_mat_cost = parseFloat(document.getElementById("less_vat_mat_cost").innerText);
+					
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					var discounted_on_type_second = document.getElementById("discounted_on_type_second").value ;
+					var fixed_amount = document.getElementById("fixed_amount").value ;
+					
+					
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_mat_cost = ((total_cost_vatinc_mat_cost-less_vat_mat_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_mat_cost = new_less_order_discount_vatex_mat_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_mat_cost = ((total_cost_vatinc_mat_cost-less_vat_mat_cost) * (percent_cost_discount/100));
+					}
+					
+					if(discounted_on_type_second == "Labor Cost")
+					{
+						
+						var new_less_order_discount_vatex_labor_cost = ((total_cost_vatinc_mat_cost-less_vat_labor_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_labor_cost = new_less_order_discount_vatex_labor_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_labor_cost = ((total_cost_vatinc_mat_cost-less_vat_labor_cost) * (percent_cost_discount/100));
+					}
+						var new_less_order_discount_vatex_total_cost = new_less_order_discount_vatex_mat_cost+new_less_order_discount_vatex_labor_cost;
+						document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = new_less_order_discount_vatex_mat_cost.toFixed(2) ;
+						document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = new_less_order_discount_vatex_labor_cost.toFixed(2) ;
+						document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_total_cost.toFixed(2);
+				}
+					
+			}
+			else
+			{
+				var discounted_on_type = document.getElementById("discounted_on_type").value;
+				var discounted_on_type_second = document.getElementById("discounted_on_type_second").value ;
+				var fixed_amount = document.getElementById("fixed_amount").value ;
+					
+				if(discounted_on_type == "Material Cost") 
+				{
+					var total_amount_vat_ex_mat_cost = parseFloat(document.getElementById("total_amount_vat_ex_mat_cost").innerText);
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_mat_cost = new_less_order_discount_vatex_mat_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100));
+					}
+					
+					document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = new_less_order_discount_vatex_mat_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_mat_cost.toFixed(2);
+					
+				}
+				else if (discounted_on_type == "Labor Cost") 
+				{
+					var total_amount_vat_ex_labor_cost = parseFloat(document.getElementById("total_amount_vat_ex_labor_cost").innerText);
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_labor_cost = ((total_amount_vat_ex_labor_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_labor_cost = new_less_order_discount_vatex_labor_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_labor_cost = ((total_amount_vat_ex_labor_cost) * (percent_cost_discount/100));
+					}
+					document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = 0.00;
+					document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = new_less_order_discount_vatex_labor_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_labor_cost.toFixed(2);
+				
+				}
+				else
+				{	
+					var total_amount_vat_ex_labor_cost = parseFloat(document.getElementById("total_amount_vat_ex_labor_cost").innerText);
+					var total_amount_vat_ex_mat_cost = parseFloat(document.getElementById("total_amount_vat_ex_mat_cost").innerText);
+					var percent_cost_discount = (document.getElementById("percent_cost_discount").value);
+					
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_mat_cost = new_less_order_discount_vatex_mat_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100));
+					}
+					
+					if(discounted_on_type_second == "Material Cost")
+					{
+						
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100)) ;
+						new_less_order_discount_vatex_mat_cost = new_less_order_discount_vatex_mat_cost + (fixed_amount*1);
+					}
+					else
+					{
+						var new_less_order_discount_vatex_mat_cost = ((total_amount_vat_ex_mat_cost) * (percent_cost_discount/100));
+					}
+					document.getElementById("less_order_discount_vatex_mat_cost").innerHTML = new_less_order_discount_vatex_mat_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_labor_cost").innerHTML = new_less_order_discount_vatex_labor_cost.toFixed(2) ;
+					document.getElementById("less_order_discount_vatex_total_cost").innerHTML =  new_less_order_discount_vatex_labor_cost.toFixed(2);
+				
+					
+				}
+			}
+		}
+		
+		//compute Discounted Total Cost (VATEx)	
+		var less_order_discount_mat_cost = parseFloat(document.getElementById("less_order_discount_mat_cost").innerText);
+		var less_vat_mat_cost = parseFloat(document.getElementById("less_vat_mat_cost").innerText);
+		var less_order_discount_vatex_mat_cost = parseFloat(document.getElementById("less_order_discount_vatex_mat_cost").innerText);
+		var total_cost_vatinc_mat_cost = parseFloat(document.getElementById("total_cost_vatinc_mat_cost").innerText);
+		var total_amount_vat_ex_mat_cost = parseFloat(document.getElementById("total_amount_vat_ex_mat_cost").innerText);
+			
+			
+		var less_order_discount_labor_cost = parseFloat(document.getElementById("less_order_discount_labor_cost").innerText);
+		var less_vat_labor_cost = parseFloat(document.getElementById("less_vat_labor_cost").innerText);
+		var less_order_discount_vatex_labor_cost = parseFloat(document.getElementById("less_order_discount_vatex_labor_cost").innerText);
+		var total_cost_vatinc_labor_cost = parseFloat(document.getElementById("total_cost_vatinc_labor_cost").innerText);
+		var total_amount_vat_ex_labor_cost = parseFloat(document.getElementById("total_amount_vat_ex_labor_cost").innerText);
+		
+		var quoted_price_vat_status = document.getElementById("quoted_price_vat_status").value ;
+		if(quoted_price_vat_status == "VATInc")
+		{
+			var new_discounted_total_cost_mat_cost = total_cost_vatinc_mat_cost - less_order_discount_mat_cost - less_vat_mat_cost - less_order_discount_vatex_mat_cost;
+			var new_discounted_total_cost_labor_cost = total_cost_vatinc_labor_cost - less_order_discount_labor_cost - less_vat_labor_cost - less_order_discount_vatex_labor_cost;
+		}
+		else
+		{
+			var new_discounted_total_cost_mat_cost = total_amount_vat_ex_mat_cost - less_order_discount_mat_cost - less_vat_mat_cost - less_order_discount_vatex_mat_cost;
+			var new_discounted_total_cost_labor_cost = total_amount_vat_ex_labor_cost - less_order_discount_labor_cost - less_vat_labor_cost - less_order_discount_vatex_labor_cost;
+	
+		}
+		new_discounted_total_cost_total_cost = new_discounted_total_cost_mat_cost+new_discounted_total_cost_labor_cost;
+		document.getElementById("discounted_total_cost_mat_cost").innerHTML =  new_discounted_total_cost_mat_cost.toFixed(2);
+		document.getElementById("discounted_total_cost_labor_cost").innerHTML =  new_discounted_total_cost_labor_cost.toFixed(2);
+		document.getElementById("discounted_total_cost_total_cost").innerHTML =  new_discounted_total_cost_total_cost.toFixed(2);
+	
+		//compute Add: VAT
+		if(vendor_vat_status == "Non-VAT")
+		{
+			document.getElementById("add_vat_mat_cost").innerHTML =  0;
+			document.getElementById("add_vat_labor_cost").innerHTML =  0;
+			document.getElementById("add_vat_total_cost").innerHTML =  0;
+		}
+		else
+		{
+			var discounted_total_cost_mat_cost = parseFloat(document.getElementById("discounted_total_cost_mat_cost").innerText);
+			var new_add_vat_mat_cost = (discounted_total_cost_mat_cost * .12);
+			
+			var discounted_total_cost_labor_cost = parseFloat(document.getElementById("discounted_total_cost_labor_cost").innerText);
+			var new_add_vat_labor_cost = (discounted_total_cost_labor_cost * .12);
+			var new_add_vat_total_cost = new_add_vat_mat_cost + new_add_vat_labor_cost;
+			document.getElementById("add_vat_mat_cost").innerHTML = new_add_vat_mat_cost.toFixed(2);
+			document.getElementById("add_vat_labor_cost").innerHTML =  new_add_vat_labor_cost.toFixed(2);
+			document.getElementById("add_vat_total_cost").innerHTML = new_add_vat_total_cost.toFixed(2);
+		
+		}
+		
+		//compute Less:  EWT
+		var total_amount_vat_ex_labor_cost = parseFloat(document.getElementById("total_amount_vat_ex_labor_cost").innerText);
+		var ewt_rate = parseFloat(document.getElementById("ewt_rate").value);
+		
+		var new_less_ewt_labor_cost = total_amount_vat_ex_labor_cost * ewt_rate;
+		document.getElementById("less_ewt_labor_cost").innerHTML = new_less_ewt_labor_cost.toFixed(2);
+		document.getElementById("less_ewt_total_cost").innerHTML = new_less_ewt_labor_cost.toFixed(2);
+		
+		
+		
+		//compute NET TOTAL AMOUNT PAYABLE
+		var discounted_total_cost_total_cost = parseFloat(document.getElementById("discounted_total_cost_total_cost").innerText);
+		var add_vat_total_cost = parseFloat(document.getElementById("add_vat_total_cost").innerText);
+		var less_ewt_total_cost = parseFloat(document.getElementById("less_ewt_total_cost").innerText);
+		var new_net_total = discounted_total_cost_total_cost + add_vat_total_cost - less_ewt_total_cost + 1200;
+		document.getElementById("net_total").innerHTML = new_net_total.toFixed(2);
+		
+		
+	
+	}
+	function vendor_vat_status(value)
+	{
+		if(value == "VAT")
+		{
+			  document.getElementById("vet_vendor_status").innerHTML = "VAT Registered";
+		}
+		else
+		{
+			 document.getElementById("vet_vendor_status").innerHTML = "Non-VAT Registered";
+		}
+		start_computation();
+	}
+	function quoted_price_vat_status(value)
+	{
+		
+		document.getElementById("vat_type1").innerHTML = value;
+		document.getElementById("vat_type2").innerHTML = value;
+		document.getElementById("vat_type3").innerHTML = value;
+	
+		start_computation();
+	}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Exam 2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3JCAhNj6tVAO_LSb8M-AzMlidiT-RPAs&callback=initMap&libraries=&v=weekly"
+      defer
+    ></script>
+<style>
+	.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	}
+
+	 #map {
+		 margin-left: auto;
+	  margin-right: auto;
+        height: 50%;
+        width: 50%;
+      }
+</style>
+<body>
+<div>
+
+
+<table border=1 width='80%' class="center" cellspacing=1>
+	<tr>
+		<th width='100%' colspan='2'>
+			Instruction: <br>
+			Create an interactive Point Blue building locator Web App using the Google Maps API. The web app should display the full address of the selected building and the location of it in the map. The map should also redirect to Google Maps, where the destination is automatically the selected building on the web app. You may use JavaScript/HTML/Google Appscript for the web app and JSON for the integration to Google Maps API. 			
+		</th>
+	</tr>
+	<tr>
+		<td width='70%' colspan='2' style='text-align:center;padding:20px;'>
+			<select onchange='get_map(this.value)' style='width:70%;padding:5px;'   id='place_name'>
+				<option value=''></option>
+				<option value='BONIFACIO POINT-2063 Nuestra Senora de Guadalupe, Guadalupe Nuevo, Makati City'>BONIFACIO POINT</option>
+				<option value='RICARTE BGC-2018 General Ricarte St., South Cembo, Makati City'>RICARTE BGC</option>
+				<option value='TEKA MAKATI-7959 Teka St., San Antonio, Makati City'>TEKA MAKATI</option>
+				<option value='ESTRELLA MAKATI-8080 Estrella St, San Antonio, Makati City'>ESTRELLA MAKATI</option>
+				<option value='GENERAL LUNA BGC-1100 General Luna St, South Cembo, Makati City'>GENERAL LUNA BGC</option>
+				<option value='QUEZON BGC-6070 Quezon St., South Cembo, Makati City'>QUEZON BGC</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td width='30%' style='text-align:center;padding:10px;'>
+				Building Name:
+		</td>
+		<td width='70%' style='text-align:center;padding:10px;'>
+			<span id='building_name'></span>
+		</td>
+	</tr>
+	<tr>
+		<td width='30%' style='text-align:center;padding:10px;'>
+				Address :
+		</td>
+		<td width='70%' style='text-align:center;padding:10px;'>
+			<span id='address'></span>
+		</td>
+	</tr>
+	<tr>
+		<td width='30%' style='text-align:center;padding:10px;'>
+				Latitude :
+		</td>
+		<td width='70%' style='text-align:center;padding:10px;'>
+			<span id='latitude'></span>
+		</td>
+	</tr>
+	<tr>
+		<td width='30%' style='text-align:center;padding:10px;'>
+				Longtitude :
+		</td>
+		<td width='70%' style='text-align:center;padding:10px;'>
+			<span id='longtitude'></span>
+		</td>
+	</tr>
+	<tr>
+		<td width='30%' style='text-align:center;padding:10px;'>
+				Google Map URL :
+		</td>
+		<td width='70%' style='text-align:center;padding:10px;'>
+			<span id='google_map_url'></span>
+		</td>
+	</tr>
+	<tr>
+		<td width='100%' colspan='2'		style='text-align:center;padding:10px;'>
+			
+		</td>
+	</tr>
+</table>
+<div id="map"></div>
+<br>
+<script>
+	function get_map(value)
+	{
+		var resulta = value.split("-");
+		const api_url =   "https://maps.googleapis.com/maps/api/geocode/json?address="+resulta[1]+"&key=AIzaSyC3JCAhNj6tVAO_LSb8M-AzMlidiT-RPAs"; 
+		fetch(api_url)
+		.then(res => res.json())
+		.then((data) => {
+		 // console.log(data.results[0]);
+		  var str = "Redirect to Google MAP";
+		  var result = str.link("http://maps.google.com?q="+data.results[0].geometry.location.lat+","+data.results[0].geometry.location.lng+"");
+		 
+		  
+		  
+			document.getElementById("building_name").innerHTML = resulta[0];
+			document.getElementById("address").innerHTML = data.results[0].formatted_address;
+			document.getElementById("latitude").innerHTML = data.results[0].geometry.location.lat;
+			document.getElementById("longtitude").innerHTML = data.results[0].geometry.location.lng;
+			document.getElementById("google_map_url").innerHTML = result;
+			initMap(data.results[0].geometry.location.lat,data.results[0].geometry.location.lng);
+			
+		  
+		})
+		.catch(err => { throw err });
+		  
+	}
+	  let map;
+		 function initMap(lat,lng) {
+			map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat:lat, lng: lng },
+          zoom: 50,
+        });
+      }
+</script>
+
+</body>
+</html>
