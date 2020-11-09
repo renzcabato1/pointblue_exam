@@ -7,7 +7,11 @@ Exam 1
 - Go to localhost/phpmymadin
 - created database pointblue
 - import "pointblue.sql" from folder of pointblue exam
-- run localhost/pointblue_exam/exam1.php
+- Open cmd 
+- Type “cd c:/xampp/htdocs/pointblue_exam/
+- Type “node db_connection.js” this is to run the API.
+- Then click the file “exam1.html”
+- run localhost/pointblue_exam/exam1.html
 
 
 Exam 2
